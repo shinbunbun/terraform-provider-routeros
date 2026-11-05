@@ -56,6 +56,11 @@ func ResourceIpHotspot() *schema.Resource {
 			Description: "Interface to run HotSpot on.",
 		},
 		KeyInvalid: PropInvalidRo,
+		"ip_of_dns_name": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "IP address the DNS name of the hotspot resolves to.",
+		},
 		"keepalive_timeout": {
 			Type:     schema.TypeString,
 			Optional: true,

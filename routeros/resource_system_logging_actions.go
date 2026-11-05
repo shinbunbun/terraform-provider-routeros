@@ -31,6 +31,12 @@ func ResourceSystemLoggingAction() *schema.Resource {
 		MetaResourcePath: PropResourcePath("/system/logging/action"),
 		MetaId:           PropId(Id),
 
+		"add_topics_string": {
+			Type:             schema.TypeBool,
+			Optional:         true,
+			Description:      "Whether to add the topics string to remote log messages.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
 		"bsd_syslog": {
 			Type:        schema.TypeBool,
 			Optional:    true,

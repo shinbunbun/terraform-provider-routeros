@@ -31,6 +31,7 @@ resource "routeros_ip_hotspot" "test" {
 
 - `id` (String) The ID of this resource.
 - `invalid` (Boolean)
+- `ip_of_dns_name` (String) IP address the DNS name of the hotspot resolves to.
 
 ## Import
 Import is supported using the following syntax:

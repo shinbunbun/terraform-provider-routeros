@@ -113,6 +113,10 @@ func ListToString(v any) (res string) {
 	return
 }
 
+var ignoredReadOnlyFields = map[string]struct{}{
+	"managed": {},
+}
+
 // TerraformResourceDataToMikrotik Marshal Mikrotik resource from TF resource schema.
 func TerraformResourceDataToMikrotik(s map[string]*schema.Schema, d *schema.ResourceData) (MikrotikItem, *MikrotikItemMetadata) {
 	item := MikrotikItem{}
@@ -417,6 +421,9 @@ func MikrotikResourceDataToTerraform(item MikrotikItem, s map[string]*schema.Sch
 		}
 
 		if _, ok := s[terraformSnakeName]; !ok {
+			if _, ok := ignoredReadOnlyFields[terraformSnakeName]; ok {
+				continue
+			}
 			// For development.
 			// panic("[MikrotikResourceDataToTerraform] The field was lost during the Schema development: " + terraformSnakeName)
 			diags = append(diags, diag.Diagnostic{
@@ -709,6 +716,9 @@ func MikrotikResourceDataToTerraformDatasource(items *[]MikrotikItem, resourceDa
 			}
 
 			if _, ok := s[terraformSnakeName]; !ok {
+				if _, ok := ignoredReadOnlyFields[terraformSnakeName]; ok {
+					continue
+				}
 				// For development.
 				//panic("[MikrotikResourceDataToTerraformDatasource] the field was lost during development.: " + terraformSnakeName)
 				diags = append(diags, diag.Diagnostic{

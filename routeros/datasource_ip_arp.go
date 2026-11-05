@@ -73,7 +73,7 @@ func datasourceIpArpRead(ctx context.Context, d *schema.ResourceData, m interfac
 	s := DatasourceIpArp().Schema
 	path := s[MetaResourcePath].Default.(string)
 
-	res, err := ReadItemsFiltered(buildReadFilter(d.Get(KeyFilter).(map[string]interface{})), path, m.(Client))
+	res, err := ReadItemsFiltered(buildDatasourceReadFilter(d.Get(KeyFilter).(map[string]interface{}), path), path, m.(Client))
 	if err != nil {
 		return diag.FromErr(err)
 	}

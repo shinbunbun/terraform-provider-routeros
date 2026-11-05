@@ -1,6 +1,9 @@
 # Terraform Provider RouterOS
 
-![module testing workflow](https://github.com/GNewbury1/terraform-provider-routeros/actions/workflows/release.yml/badge.svg?branch=main)
+> This is a fork of [terraform-routeros/terraform-provider-routeros](https://github.com/terraform-routeros/terraform-provider-routeros)
+> that adds support for fields introduced in recent RouterOS 7 releases. It is published as `shinbunbun/routeros`.
+
+![release workflow](https://github.com/shinbunbun/terraform-provider-routeros/actions/workflows/release.yml/badge.svg)
 
 **Note**: In release 1.43, the resource schemas have been changed:
 * `routeros_routing_bgp_connection`
@@ -25,7 +28,7 @@ To get started with the provider, you first need to enable the REST API on your 
 terraform {
   required_providers {
     routeros = {
-      source = "terraform-routeros/routeros"
+      source = "shinbunbun/routeros"
     }
   }
 }
@@ -38,11 +41,12 @@ provider "routeros" {
 
 ```
 
-For more in-depth documentation about each of the resources and datasources, please read the [documentation on Hashicorp's Provider registry](https://registry.terraform.io/providers/terraform-routeros/routeros/latest/docs)
+For more in-depth documentation about each of the resources and datasources, please read the [documentation on Hashicorp's Provider registry](https://registry.terraform.io/providers/shinbunbun/routeros/latest/docs)
 
 ### Versions tested
 
 - go 1.24.2 and ROS 7.12, 7.15, 7.16 (stable)
+- This fork: ROS 7.22.3, 7.23.8 and 7.24.6 (CHR, REST)
 
 ## Changelog
 
@@ -65,8 +69,8 @@ mv main ~/.terraform.d/plugins/terraform.local/local/routeros/1.0.0/$(uname -s |
 ```hcl
 required_providers {
   routeros = {
-    source  = "terraform-routeros/routeros"
-    version = "1.85.1"
+    source  = "shinbunbun/routeros"
+    version = "~> 1.101"
   }
 }
 ```
@@ -85,7 +89,7 @@ required_providers {
 ```hcl
 provider_installation {
   dev_overrides {
-     "terraform-routeros/routeros" = "/path/to/your/git/clone"
+     "shinbunbun/routeros" = "/path/to/your/git/clone"
   }
 
   direct {

@@ -32,7 +32,7 @@ var (
 	providerTemplate = `terraform {
   required_providers {
     routeros = {
-      source  = "terraform-routeros/routeros"
+      source  = "shinbunbun/routeros"
       version = "~> 1"
     }
   }

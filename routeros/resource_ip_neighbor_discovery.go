@@ -20,6 +20,18 @@ func ResourceIpNeighborDiscoverySettings() *schema.Resource {
 		MetaResourcePath: PropResourcePath("/ip/neighbor/discovery-settings"),
 		MetaId:           PropId(Id),
 
+		"add_dns_entries": {
+			Type:             schema.TypeBool,
+			Optional:         true,
+			Description:      "Whether to add DNS entries for discovered neighbors.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
+		"add_dns_entries_suffix": {
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "Domain suffix of the DNS entries added for discovered neighbors.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
 		"discover_interface_list": {
 			Type:             schema.TypeString,
 			Optional:         true,
@@ -31,6 +43,12 @@ func ResourceIpNeighborDiscoverySettings() *schema.Resource {
 			Optional: true,
 			Description: "An option to adjust the frequency at which neighbor discovery packets are transmitted. " +
 				"The setting is available since RouterOS version 7.16.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
+		"dying_gasp": {
+			Type:             schema.TypeBool,
+			Optional:         true,
+			Description:      "Whether to send a dying gasp notification to neighbors on power loss.",
 			DiffSuppressFunc: AlwaysPresentNotUserProvided,
 		},
 		"lldp_dcbx": {
@@ -55,6 +73,12 @@ func ResourceIpNeighborDiscoverySettings() *schema.Resource {
 			Optional: true,
 			Description: "Whether to send Maximum Frame Size TLV in LLDP, which indicates the maximum frame size capability" +
 				" of the interface in bytes (`l2mtu + 18`). Only applies to the Ethernet interfaces.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
+		"lldp_med": {
+			Type:             schema.TypeBool,
+			Optional:         true,
+			Description:      "Whether to send LLDP-MED TLVs.",
 			DiffSuppressFunc: AlwaysPresentNotUserProvided,
 		},
 		"lldp_med_net_policy_vlan": {

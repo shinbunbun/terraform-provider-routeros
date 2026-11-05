@@ -21,6 +21,7 @@ func ResourceIpHotspotIpBinding() *schema.Resource {
 	resSchema := map[string]*schema.Schema{
 		MetaResourcePath: PropResourcePath("/ip/hotspot/ip-binding"),
 		MetaId:           PropId(Id),
+		MetaSkipFields:   PropSkipFields("bypassed"),
 
 		"address": {
 			Type:        schema.TypeString,

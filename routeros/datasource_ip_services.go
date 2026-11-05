@@ -154,14 +154,14 @@ func datasourceIPServicesRead(ctx context.Context, d *schema.ResourceData, m int
 	var filter = d.Get(KeyFilter).(map[string]interface{})
 
 	filter["dynamic"] = "false"
-	var res, err = ReadItemsFiltered(buildReadFilter(filter), path, m.(Client))
+	var res, err = ReadItemsFiltered(buildDatasourceReadFilter(filter, path), path, m.(Client))
 	if err != nil {
 		return diag.FromErr(err)
 	}
 	var diags = MikrotikResourceDataToTerraformDatasource(res, "services", s, d)
 
 	filter["dynamic"] = "true"
-	res, err = ReadItemsFiltered(buildReadFilter(filter), path, m.(Client))
+	res, err = ReadItemsFiltered(buildDatasourceReadFilter(filter, path), path, m.(Client))
 	if err != nil {
 		return diag.FromErr(err)
 	}

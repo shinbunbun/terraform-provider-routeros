@@ -49,6 +49,12 @@ func ResourceInterfaceBridge() *schema.Resource {
 		},
 		KeyDisabled: PropDisabledRw,
 		KeyDynamic:  PropDynamicRo,
+		"dhcpv6_snooping": {
+			Type:             schema.TypeBool,
+			Optional:         true,
+			Description:      "Enables or disables DHCPv6 Snooping on the bridge.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
 		"ether_type": {
 			Type:             schema.TypeString,
 			Optional:         true,
@@ -163,6 +169,24 @@ func ResourceInterfaceBridge() *schema.Resource {
 			DiffSuppressFunc: TimeEqual,
 			RequiredWith:     []string{"igmp_snooping"},
 		},
+		"mlag_heartbeat": {
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "MLAG heartbeat interval. Available in RouterOS 7.22 and later.",
+			DiffSuppressFunc: TimeEqual,
+		},
+		"mlag_peer_port": {
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "MLAG peer port. Available in RouterOS 7.22 and later.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
+		"mlag_priority": {
+			Type:             schema.TypeInt,
+			Optional:         true,
+			Description:      "MLAG system priority. Available in RouterOS 7.22 and later.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
 		"mld_version": {
 			Type:     schema.TypeInt,
 			Optional: true,
@@ -272,6 +296,12 @@ func ResourceInterfaceBridge() *schema.Resource {
 			RequiredWith:     []string{"igmp_snooping", "multicast_querier"},
 		},
 		KeyRunning: PropRunningRo,
+		"ra_guard": {
+			Type:             schema.TypeBool,
+			Optional:         true,
+			Description:      "Enables or disables IPv6 RA Guard on the bridge.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
 		"region_name": {
 			Type:        schema.TypeString,
 			Optional:    true,

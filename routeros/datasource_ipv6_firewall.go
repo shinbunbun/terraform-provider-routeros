@@ -69,7 +69,7 @@ func datasourceIPv6FirewallFilterRead(ctx context.Context, d *schema.ResourceDat
 		for _, sectionResourceData := range d.Get(section).([]interface{}) {
 			filter := sectionResourceData.(map[string]interface{})[KeyFilter].(map[string]interface{})
 
-			r, err := ReadItemsFiltered(buildReadFilter(filter), path, m.(Client))
+			r, err := ReadItemsFiltered(buildDatasourceReadFilter(filter, path), path, m.(Client))
 			if err != nil {
 				return diag.FromErr(err)
 			}

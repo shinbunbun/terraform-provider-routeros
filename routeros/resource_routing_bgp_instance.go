@@ -45,6 +45,12 @@ func ResourceRoutingBgpInstance() *schema.Resource {
 		},
 		KeyInactive: PropInactiveRo,
 		KeyName:     PropName("Instance name."),
+		"multipath": {
+			Type:             schema.TypeInt,
+			Optional:         true,
+			Description:      "Maximum number of equal-cost paths.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
 		"router_id": {
 			Type:     schema.TypeString,
 			Optional: true,

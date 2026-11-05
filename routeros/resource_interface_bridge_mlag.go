@@ -49,6 +49,8 @@ func ResourceInterfaceBridgeMlag() *schema.Resource {
 	}
 
 	return &schema.Resource{
+		Description: "For RouterOS versions before 7.22. RouterOS 7.22 and later have no /interface/bridge/mlag menu; " +
+			"use the mlag_heartbeat, mlag_peer_port and mlag_priority attributes of routeros_interface_bridge there.",
 		CreateContext: DefaultSystemCreate(resSchema),
 		ReadContext:   DefaultSystemRead(resSchema),
 		UpdateContext: DefaultSystemUpdate(resSchema),

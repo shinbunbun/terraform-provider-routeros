@@ -94,6 +94,11 @@ func ResourceDhcpClient() *schema.Resource {
 		},
 		KeyInterface: PropInterfaceRw,
 		KeyInvalid:   PropInvalidRo,
+		"name": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "Name of the DHCP client entry.",
+		},
 		"primary_dns": {
 			Type:        schema.TypeString,
 			Computed:    true,

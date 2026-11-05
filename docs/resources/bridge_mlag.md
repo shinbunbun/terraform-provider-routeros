@@ -1,5 +1,5 @@
 # routeros_bridge_mlag (Resource)
-
+For RouterOS versions before 7.22. RouterOS 7.22 and later have no /interface/bridge/mlag menu; use the mlag_heartbeat, mlag_peer_port and mlag_priority attributes of routeros_interface_bridge there.
 
 ## Example Usage
 ```terraform

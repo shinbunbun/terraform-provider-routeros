@@ -927,6 +927,20 @@ func buildReadFilter(m map[string]any) []string {
 	return res
 }
 
+func buildDatasourceReadFilter(m map[string]any, resourcePath string) []string {
+	drift := driftAttributeSlice.GetDriftMap(RouterOSVersion, resourcePath, false)
+	res := make(map[string]any, len(m))
+	for k, v := range m {
+		if mt, ok := drift[k]; ok {
+			k = mt
+		} else if mt, ok := drift[SnakeToKebab(k)]; ok {
+			k = mt
+		}
+		res[k] = v
+	}
+	return buildReadFilter(res)
+}
+
 // Diagnostics
 var DeleteSystemObject = []diag.Diagnostic{{
 	Severity: diag.Warning,

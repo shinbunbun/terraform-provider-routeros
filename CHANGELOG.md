@@ -1,3 +1,31 @@
+## [1.101.0](https://github.com/shinbunbun/terraform-provider-routeros/compare/v1.99.1...v1.101.0) (2026-11-05)
+
+First release of the `shinbunbun/routeros` fork. It also contains the unreleased upstream changes listed under 1.100.0.
+
+To switch from `terraform-routeros/routeros`, change `source` to `shinbunbun/routeros` and run `terraform init -upgrade`. Terraform moves the resources in the state to the new provider address on the next apply. If your Terraform or OpenTofu version reports a provider mismatch instead, run `terraform state replace-provider registry.terraform.io/terraform-routeros/routeros registry.terraform.io/shinbunbun/routeros`.
+
+### Features
+
+* **ip_service:** Accept `reverse-proxy` in `numbers`
+* **interface_bridge:** Add `dhcpv6_snooping`, `ra_guard`, `mlag_heartbeat`, `mlag_peer_port` and `mlag_priority`
+* **interface_bridge_port:** Add `trusted_dhcpv6` and `trusted_ra`
+* **interface_wireguard_peer:** Add `client_allowed_address`
+* **system_logging_action:** Add `add_topics_string`
+* **routing_bgp_instance:** Add `multipath`
+* **ip_hotspot_profile:** Add `install_hotspot_queue`
+* **ip_neighbor_discovery_settings:** Add `add_dns_entries`, `add_dns_entries_suffix`, `dying_gasp` and `lldp_med`
+* **ip_hotspot, ip_dhcp_client:** Add computed `ip_of_dns_name` and `name`
+
+### Bug Fixes
+
+* **ip_service:** Read and write `address` as `available-from` on RouterOS 7.24 and later, in the resource and in the `routeros_ip_services` data source filter
+* Drop the read-only `managed`, `actual_path_cost` and `bypassed` values instead of warning about them
+* Translate data source filter keys with the attribute drift table
+
+### Notes
+
+* **bridge_mlag:** The `/interface/bridge/mlag` menu does not exist in RouterOS 7.22 and later; use the MLAG attributes of `routeros_interface_bridge` there
+
 ## [1.100.0](https://github.com/terraform-routeros/terraform-provider-routeros/compare/v1.99.1...v1.100.0) (2026-03-13)
 
 ### Features

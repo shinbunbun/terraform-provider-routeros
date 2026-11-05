@@ -28,6 +28,12 @@ func ResourceInterfaceWireguardPeer() *schema.Resource {
 				"wg interface is set on that device.",
 			DiffSuppressFunc: AlwaysPresentNotUserProvided,
 		},
+		"client_allowed_address": {
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "Allowed address used in the generated client configuration.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
 		"client_dns": {
 			Type:             schema.TypeString,
 			Optional:         true,

@@ -60,6 +60,7 @@ var (
 )
 
 func Test_mikrotikResourceDataToTerraform(t *testing.T) {
+	setTestRouterOSVersion(t, "7.22.3")
 
 	testItem := MikrotikItem{".id": "*39", "string": "string12345", "float": "0.01", "int": "10", "bool": "true"}
 
@@ -82,6 +83,7 @@ func Test_mikrotikResourceDataToTerraform(t *testing.T) {
 }
 
 func Test_terraformResourceDataToMikrotik(t *testing.T) {
+	setTestRouterOSVersion(t, "7.22.3")
 
 	expected := MikrotikItem{"string": "string12345", "float": "0.01", "int": "10", "bool": "yes"}
 
@@ -100,6 +102,7 @@ func Test_terraformResourceDataToMikrotik(t *testing.T) {
 }
 
 func Test_mikrotikResourceDataToTerraformDatasource(t *testing.T) {
+	setTestRouterOSVersion(t, "7.22.3")
 	testItems := []MikrotikItem{
 		{"string": "string12345", "float": "0.01", "int": "10", "bool": "yes"},
 		{"string": "12345string", "float": "0.02", "int": "20", "bool": "no"},
@@ -169,4 +172,46 @@ func Test_loadSkipFields(t *testing.T) {
 			t.Fatalf("bad: (item: %v) expected:%#v\tactual:%#v", i, expected[i], loadSkipFields(actual.s))
 		}
 	}
+}
+
+func Test_mikrotikResourceDataToTerraformIgnoresReadOnlyFields(t *testing.T) {
+	setTestRouterOSVersion(t, "7.22.3")
+
+	s := map[string]*schema.Schema{
+		MetaResourcePath: PropResourcePath("/interface/bridge"),
+		MetaId:           PropId(Id),
+		KeyName:          {Type: schema.TypeString, Optional: true},
+	}
+	d := schema.TestResourceDataRaw(t, s, map[string]interface{}{})
+
+	diags := MikrotikResourceDataToTerraform(MikrotikItem{"name": "bridge1", "managed": "false", "unknown-field": "x"}, s, d)
+
+	var warned []string
+	for _, w := range diags {
+		warned = append(warned, w.Summary)
+	}
+	if len(warned) != 1 || warned[0] != "Field 'unknown_field' not found in the schema" {
+		t.Fatalf("unexpected diagnostics: %v", warned)
+	}
+	if got := d.Get("name"); got != "bridge1" {
+		t.Fatalf("name = %v, want bridge1", got)
+	}
+}
+
+func Test_mikrotikResourceDataToTerraformDatasourceIgnoresReadOnlyFields(t *testing.T) {
+	setTestRouterOSVersion(t, "7.22.3")
+	items := []MikrotikItem{{"string": "s", "managed": "false", "unknown-field": "x"}}
+	d := testDatasource.TestResourceData()
+
+	diags := MikrotikResourceDataToTerraformDatasource(&items, "test_name", testDatasource.Schema, d)
+
+	if len(diags) != 1 || diags[0].Summary != "Field 'unknown_field' not found in the schema" {
+		t.Fatalf("unexpected diagnostics: %v", diags)
+	}
+}
+
+func setTestRouterOSVersion(t *testing.T, version string) {
+	saved := RouterOSVersion
+	RouterOSVersion = version
+	t.Cleanup(func() { RouterOSVersion = saved })
 }
