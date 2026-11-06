@@ -94,6 +94,18 @@ func ResourceIpSettings() *schema.Resource {
 				"to defaults according to RFC1812 for routers.",
 			DiffSuppressFunc: AlwaysPresentNotUserProvided,
 		},
+		"ipv4_fragment_time": {
+			Type:             schema.TypeInt,
+			Optional:         true,
+			Description:      "Time in seconds to keep an IPv4 fragment in memory. Available in RouterOS 7.23 and later.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
+		"ipv4_high_fragment_thresh": {
+			Type:             schema.TypeInt,
+			Optional:         true,
+			Description:      "Maximum memory in bytes used to reassemble IPv4 fragments. Available in RouterOS 7.23 and later.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+		},
 		"ipv4_multipath_hash_policy": {
 			Type:     schema.TypeString,
 			Optional: true,

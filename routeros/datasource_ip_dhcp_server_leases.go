@@ -38,6 +38,14 @@ func DatasourceIpDhcpServerLeases() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
+						"active_agent_circuit_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"active_agent_remote_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 						"active_mac_address": {
 							Type:     schema.TypeString,
 							Computed: true,
@@ -54,9 +62,17 @@ func DatasourceIpDhcpServerLeases() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
+						"agent_circuit_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"agent_remote_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 						"allow_dual_stack_queue": {
-    						Type:     schema.TypeBool,
-    						Computed: true,
+							Type:     schema.TypeBool,
+							Computed: true,
 						},
 						"blocked": { // Sample = blocked: "false"
 							Type:     schema.TypeBool,
@@ -112,6 +128,42 @@ func DatasourceIpDhcpServerLeases() *schema.Resource {
 						},
 						"status": { // Sample = status: "waiting"
 							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"active_hostname": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"always_broadcast": {
+							Type:     schema.TypeBool,
+							Computed: true,
+						},
+						"block_access": {
+							Type:     schema.TypeBool,
+							Computed: true,
+						},
+						"dhcp_option_set": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"insert_queue_before": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"lease_time": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"rate_limit": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"src_mac_address": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"use_src_mac": {
+							Type:     schema.TypeBool,
 							Computed: true,
 						},
 					},

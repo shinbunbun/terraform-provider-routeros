@@ -1,3 +1,18 @@
+## [1.102.0](https://github.com/shinbunbun/terraform-provider-routeros/compare/v1.101.0...v1.102.0) (2026-11-07)
+
+### Features
+
+* **ip_dhcp_server:** Add `add_dns_entries_suffix`
+* **ip_settings:** Add `ipv4_fragment_time` and `ipv4_high_fragment_thresh`
+* **ip_dhcp_server_lease:** Add computed `active_agent_circuit_id` and `active_agent_remote_id`
+* **ip_dhcp_server_leases:** Add `active_agent_circuit_id`, `active_agent_remote_id`, `active_hostname`, `agent_circuit_id`, `agent_remote_id`, `always_broadcast`, `block_access`, `dhcp_option_set`, `insert_queue_before`, `lease_time`, `rate_limit`, `src_mac_address` and `use_src_mac`
+* **ipv6_addresses:** Add `auto_link_local`, `global`, `preferred`, `valid` and `vrf`
+
+### Bug Fixes
+
+* **ipv6_address:** Drop the remaining `preferred` and `valid` lifetimes instead of warning about them
+* **ip_dhcp_server:** Stop planning to clear `dynamic_lease_identifiers` when it is not set in the configuration
+
 ## [1.101.0](https://github.com/shinbunbun/terraform-provider-routeros/compare/v1.99.1...v1.101.0) (2026-11-05)
 
 First release of the `shinbunbun/routeros` fork. It also contains the unreleased upstream changes listed under 1.100.0.

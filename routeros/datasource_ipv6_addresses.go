@@ -36,6 +36,10 @@ func DatasourceIPv6Addresses() *schema.Resource {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
+						"auto_link_local": {
+							Type:     schema.TypeBool,
+							Computed: true,
+						},
 						"deprecated": {
 							Type:     schema.TypeBool,
 							Computed: true,
@@ -60,6 +64,10 @@ func DatasourceIPv6Addresses() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
+						"global": {
+							Type:     schema.TypeBool,
+							Computed: true,
+						},
 						"interface": {
 							Type:     schema.TypeString,
 							Computed: true,
@@ -76,8 +84,20 @@ func DatasourceIPv6Addresses() *schema.Resource {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
+						"preferred": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 						"slave": {
 							Type:     schema.TypeBool,
+							Computed: true,
+						},
+						"valid": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"vrf": {
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 					},
