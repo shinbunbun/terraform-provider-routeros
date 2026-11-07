@@ -1,3 +1,9 @@
+## [2.0.0](https://github.com/shinbunbun/terraform-provider-routeros/compare/v1.102.0...v2.0.0) (2026-11-07)
+
+### ⚠ BREAKING CHANGES
+
+* **ip_address, ipv6_address:** `vrf` is now read-only. RouterOS rejects it in `add` and `set` (`unknown parameter vrf`); the VRF follows the interface. A configuration that sets `vrf` now fails at plan with `Can't configure a value for "vrf"`; remove `vrf` from the configuration. No state migration or reimport is needed.
+
 ## [1.102.0](https://github.com/shinbunbun/terraform-provider-routeros/compare/v1.101.0...v1.102.0) (2026-11-07)
 
 ### Features
