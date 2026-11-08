@@ -89,6 +89,10 @@ func TestAccSystemCertificatesTest_importFileName(t *testing.T) {
 	for _, name := range testNames {
 		t.Run(name, func(t *testing.T) {
 			fileName := "external-" + acctest.RandString(8)
+			t.Cleanup(func() {
+				testDeleteFile(t, fileName+".crt")
+				testDeleteFile(t, fileName+".key")
+			})
 
 			resource.Test(t, resource.TestCase{
 				PreCheck: func() {
@@ -137,7 +141,7 @@ func TestAccSystemCertificatesTest_importWrongPassphrase(t *testing.T) {
 				Steps: []resource.TestStep{
 					{
 						Config:      testAccSystemCertificatesImportWrongPassphraseConfig(),
-						ExpectError: regexp.MustCompile(`no private key was imported from file`),
+						ExpectError: regexp.MustCompile(`the certificate has no private key after importing file`),
 					},
 				},
 			})
@@ -145,11 +149,28 @@ func TestAccSystemCertificatesTest_importWrongPassphrase(t *testing.T) {
 	}
 }
 
-func testUploadFile(t *testing.T, name, contents string) {
+func testRestClient() *RestClient {
 	host := reHost.FindStringSubmatch(os.Getenv("ROS_HOSTURL"))[1]
-	c := newRestClient(context.Background(), "https://"+host+":443", os.Getenv("ROS_USERNAME"), os.Getenv("ROS_PASSWORD"))
-	if _, err := CreateItem(context.Background(), MikrotikItem{"name": name, "contents": contents}, "/file", c); err != nil {
+	return newRestClient(context.Background(), "https://"+host+":443", os.Getenv("ROS_USERNAME"), os.Getenv("ROS_PASSWORD"))
+}
+
+func testUploadFile(t *testing.T, name, contents string) {
+	if _, err := CreateItem(context.Background(), MikrotikItem{"name": name, "contents": contents}, "/file", testRestClient()); err != nil {
 		t.Fatalf("upload %v: %v", name, err)
+	}
+}
+
+func testDeleteFile(t *testing.T, name string) {
+	c := testRestClient()
+	res, err := ReadItemsFiltered([]string{"name=" + name}, "/file", c)
+	if err != nil {
+		t.Errorf("look up %v: %v", name, err)
+		return
+	}
+	for _, f := range *res {
+		if diags := fileDelete(context.Background(), f.GetID(Id), c); diags.HasError() {
+			t.Errorf("delete %v: %v", name, diags)
+		}
 	}
 }
 
