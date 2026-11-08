@@ -21,6 +21,8 @@ type driftObject struct {
 	Resources map[string][]driftAttribute
 }
 
+const driftRemoved = "-"
+
 type driftAttribute struct {
 	TF string
 	MT string
@@ -77,10 +79,32 @@ func (do *driftObjects) GetDriftMap(ros, resName string, reverse bool) (res map[
 	for i := range *do {
 		if version >= (*do)[i].Version {
 			for _, attr := range (*do)[i].Resources[resName] {
+				if attr.MT == driftRemoved {
+					continue
+				}
 				if !reverse {
 					res[attr.TF] = attr.MT
 				} else {
 					res[attr.MT] = attr.TF
+				}
+			}
+		}
+	}
+	return
+}
+
+func (do *driftObjects) GetRemoved(ros, resName string) (res map[string]struct{}) {
+	version, err := parseRouterOSVersion(ros)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	res = map[string]struct{}{}
+	for i := range *do {
+		if version >= (*do)[i].Version {
+			for _, attr := range (*do)[i].Resources[resName] {
+				if attr.MT == driftRemoved {
+					res[attr.TF] = struct{}{}
 				}
 			}
 		}
