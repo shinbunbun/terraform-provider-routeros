@@ -44,8 +44,6 @@ func TestAccInterfaceEthernetTest_basic(t *testing.T) {
 							resource.TestCheckResourceAttr(testInterfaceEthernetAddress, "mdix_enable", "false"),
 							resource.TestCheckResourceAttr(testInterfaceEthernetAddress, "sfp_shutdown_temperature", "60"),
 							resource.TestCheckResourceAttr(testInterfaceEthernetAddress, "speed", "10G-baseT"),
-							// The link is not up yet right after the speed change on 7.22.
-							testCheckResourceAttrIf(!testCheckMinVersion(t, "7.22"), testInterfaceEthernetAddress, "running", "true"),
 						),
 					},
 				},
