@@ -162,9 +162,9 @@ EOT
 Optional:
 
 - `cert_file_content` (String) Certificate in PEM format.
-- `cert_file_name` (String) Certificate file name that will be imported.
-- `key_file_content` (String) Key in PEM format.
-- `key_file_name` (String) Key file name that will be imported.
+- `cert_file_name` (String) Certificate file name that will be imported. RouterOS deletes the file after a successful import, so a `routeros_file` resource that creates it will plan to recreate it on every run; prefer `cert_file_content`.
+- `key_file_content` (String, Sensitive) Key in PEM format.
+- `key_file_name` (String) Key file name that will be imported. RouterOS deletes the file after a successful import, so a `routeros_file` resource that creates it will plan to recreate it on every run; prefer `key_file_content`.
 - `passphrase` (String, Sensitive) File passphrase if there is such.
 
 

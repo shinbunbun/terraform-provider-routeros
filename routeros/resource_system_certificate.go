@@ -142,19 +142,20 @@ func ResourceSystemCertificate() *schema.Resource {
 						Type:        schema.TypeString,
 						Optional:    true,
 						ForceNew:    true,
-						Description: "Certificate file name that will be imported.",
+						Description: "Certificate file name that will be imported. RouterOS deletes the file after a successful import, so a `routeros_file` resource that creates it will plan to recreate it on every run; prefer `cert_file_content`.",
 					},
 					"key_file_content": {
 						Type:        schema.TypeString,
 						Optional:    true,
 						ForceNew:    true,
+						Sensitive:   true,
 						Description: "Key in PEM format.",
 					},
 					"key_file_name": {
 						Type:        schema.TypeString,
 						Optional:    true,
 						ForceNew:    true,
-						Description: "Key file name that will be imported.",
+						Description: "Key file name that will be imported. RouterOS deletes the file after a successful import, so a `routeros_file` resource that creates it will plan to recreate it on every run; prefer `key_file_content`.",
 					},
 					"passphrase": {
 						Type:        schema.TypeString,
