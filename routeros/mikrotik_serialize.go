@@ -177,8 +177,9 @@ func TerraformResourceDataToMikrotik(s map[string]*schema.Schema, d *schema.Reso
 			continue
 		}
 
-		// Send an attribute this RouterOS version no longer accepts only when it is configured, so RouterOS rejects it.
-		if _, ok := removedFields[terraformSnakeName]; ok && rawConfig.GetAttr(terraformSnakeName).IsNull() {
+		// A removed attribute set to a non-default value is still sent, so that RouterOS rejects it.
+		if _, ok := removedFields[terraformSnakeName]; ok &&
+			(rawConfig.GetAttr(terraformSnakeName).IsNull() || d.Get(terraformSnakeName) == terraformMetadata.Default) {
 			continue
 		}
 

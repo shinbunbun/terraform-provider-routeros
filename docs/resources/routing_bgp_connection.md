@@ -27,7 +27,7 @@ resource "routeros_routing_bgp_connection" "test" {
 
 ### Optional
 
-- `add_path_out` (String, Deprecated) RouterOS up to 7.21 only; the provider does not send it to 7.22 or later unless it is set in the configuration.
+- `add_path_out` (String, Deprecated) RouterOS up to 7.21 only. RouterOS 7.22 and later receive it only when it is set to a value other than `none`.
 - `address_families` (String) List of address families about which this peer will exchange routing information. The remote peer must support (they usually do) BGP capabilities optional parameter to negotiate any other families than IP.
 - `cisco_vpls_nlri_len_fmt` (String) VPLS NLRI length format type. Used for compatibility with Cisco VPLS.
 - `cluster_id` (String, Deprecated) In case this instance is a route reflector: the cluster ID of the router reflector cluster to this instance belongs. This attribute helps to recognize routing updates that come from another route reflector in this cluster and avoid routing information looping. Note that normally there is only one route reflector in a cluster; in this case, 'cluster-id' does not need to be configured and BGP router ID is used instead.

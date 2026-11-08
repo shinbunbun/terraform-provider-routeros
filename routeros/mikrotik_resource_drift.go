@@ -13,8 +13,8 @@ func init() {
     driftAttributeSlice.Add("7.20", "/container/envs", "name", "list")
     driftAttributeSlice.Add("7.20", "/interface/vxlan", "vrf", "vtep-vrf")
     driftAttributeSlice.Add("7.21", "/ip/ssh", "always-allow-password-login", "password-authentication")
-    driftAttributeSlice.Add("7.22", "/routing/bgp/connection", "add_path_out", "")
-    driftAttributeSlice.Add("7.22", "/routing/bgp/template", "add_path_out", "")
+    driftAttributeSlice.Add("7.22", "/routing/bgp/connection", "add_path_out", "-")
+    driftAttributeSlice.Add("7.22", "/routing/bgp/template", "add_path_out", "-")
     driftAttributeSlice.Add("7.24", "/ip/service", "address", "available-from")
     driftAttributeSlice.SortDesc()
 }

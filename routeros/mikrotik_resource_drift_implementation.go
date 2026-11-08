@@ -21,6 +21,8 @@ type driftObject struct {
 	Resources map[string][]driftAttribute
 }
 
+const driftRemoved = "-"
+
 type driftAttribute struct {
 	TF string
 	MT string
@@ -77,7 +79,7 @@ func (do *driftObjects) GetDriftMap(ros, resName string, reverse bool) (res map[
 	for i := range *do {
 		if version >= (*do)[i].Version {
 			for _, attr := range (*do)[i].Resources[resName] {
-				if attr.MT == "" {
+				if attr.MT == driftRemoved {
 					continue
 				}
 				if !reverse {
@@ -91,7 +93,6 @@ func (do *driftObjects) GetDriftMap(ros, resName string, reverse bool) (res map[
 	return
 }
 
-// Attributes that RouterOS no longer accepts: the drift entries with an empty MikroTik name.
 func (do *driftObjects) GetRemoved(ros, resName string) (res map[string]struct{}) {
 	version, err := parseRouterOSVersion(ros)
 	if err != nil {
@@ -102,7 +103,7 @@ func (do *driftObjects) GetRemoved(ros, resName string) (res map[string]struct{}
 	for i := range *do {
 		if version >= (*do)[i].Version {
 			for _, attr := range (*do)[i].Resources[resName] {
-				if attr.MT == "" {
+				if attr.MT == driftRemoved {
 					res[attr.TF] = struct{}{}
 				}
 			}

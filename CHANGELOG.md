@@ -2,7 +2,7 @@
 
 ### Bug Fixes
 
-* **routing_bgp_connection, routing_bgp_template:** Stop sending `add_path_out` to RouterOS 7.22 and later unless it is set in the configuration. RouterOS 7.22 removed `add-path-out`, and the provider sent its default `none` on every create and update, so both failed with `unknown parameter add-path-out`. `add_path_out` is now deprecated.
+* **routing_bgp_connection, routing_bgp_template:** Stop sending `add_path_out` to RouterOS 7.22 and later unless it is set to a value other than `none`. RouterOS 7.22 removed `add-path-out`, and the provider sent its default `none` on every create and update, so both failed with `unknown parameter add-path-out`. `add_path_out` is now deprecated.
 * **system_certificate:** Mark `key_file_content` as sensitive in the schema.
 
 ### Documentation

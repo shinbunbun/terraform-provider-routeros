@@ -60,8 +60,8 @@ func TestDriftRemovedBgpAddPathOut(t *testing.T) {
 		if _, ok := driftAttributeSlice.GetDriftMap("7.22", path, false)["add_path_out"]; ok {
 			t.Errorf("%v: add_path_out is in the forward drift map", path)
 		}
-		if _, ok := driftAttributeSlice.GetDriftMap("7.22", path, true)[""]; ok {
-			t.Errorf("%v: empty MikroTik name is in the reverse drift map", path)
+		if _, ok := driftAttributeSlice.GetDriftMap("7.22", path, true)[driftRemoved]; ok {
+			t.Errorf("%v: the removed marker is in the reverse drift map", path)
 		}
 	}
 }
