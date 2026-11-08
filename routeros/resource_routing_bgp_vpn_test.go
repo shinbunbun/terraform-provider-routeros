@@ -39,7 +39,6 @@ func TestAccRoutingBgpVpnTest_basic(t *testing.T) {
 }
 
 func testAccRoutingBgpVpnConfig(t *testing.T) string {
-	// RouterOS 7.20 requires a BGP instance for a VPN.
 	instance, instanceRef := "", ""
 	if testCheckMinVersion(t, "7.20") {
 		instance = `

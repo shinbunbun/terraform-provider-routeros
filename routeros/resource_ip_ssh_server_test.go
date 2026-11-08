@@ -5,18 +5,15 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 const testIpSSHServerSettings = "routeros_ip_ssh_server.test"
 
 func TestAccIpSSHServerSettingsTest_basic(t *testing.T) {
-	// RouterOS 7.17 removed allow-none-crypto.
 	crypto := "allow_none_crypto"
 	if testCheckMinVersion(t, "7.17") {
 		crypto = "strong_crypto"
 	}
-	// RouterOS 7.21 replaced always-allow-password-login with the password-authentication enum.
 	passwordLogin := !testCheckMinVersion(t, "7.21")
 
 	for _, name := range testNames {
@@ -67,11 +64,4 @@ resource "routeros_ip_ssh_server" "test" {
 	host_key_size               = %v
 }
 `, providerConfig, crypto, b, login, fwd, kSize)
-}
-
-func testCheckResourceAttrIf(cond bool, name, key, value string) resource.TestCheckFunc {
-	if !cond {
-		return func(*terraform.State) error { return nil }
-	}
-	return resource.TestCheckResourceAttr(name, key, value)
 }

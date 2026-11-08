@@ -10,10 +10,9 @@ import (
 const testSystemLoggingAction = "routeros_system_logging_action.action"
 
 func TestAccSystemLoggingActionTest_basic(t *testing.T) {
-	// RouterOS 7.18 replaced bsd-syslog with remote-log-format.
-	format, formatValue := "bsd_syslog", "true"
+	format, formatValue, formatHCL := "bsd_syslog", "true", "true"
 	if testCheckMinVersion(t, "7.18") {
-		format, formatValue = "remote_log_format", "syslog"
+		format, formatValue, formatHCL = "remote_log_format", "syslog", `"syslog"`
 	}
 
 	for _, name := range testNames {
@@ -26,7 +25,7 @@ func TestAccSystemLoggingActionTest_basic(t *testing.T) {
 				ProviderFactories: testAccProviderFactories,
 				Steps: []resource.TestStep{
 					{
-						Config: testAccSystemLoggingActionConfig(format, formatValue),
+						Config: testAccSystemLoggingActionConfig(format, formatHCL),
 						Check: resource.ComposeTestCheckFunc(
 							testResourcePrimaryInstanceId(testSystemLoggingAction),
 							resource.TestCheckResourceAttr(testSystemLoggingAction, "name", "action1"),
@@ -46,11 +45,7 @@ func TestAccSystemLoggingActionTest_basic(t *testing.T) {
 	}
 }
 
-func testAccSystemLoggingActionConfig(format, formatValue string) string {
-	value := formatValue
-	if format == "remote_log_format" {
-		value = `"` + formatValue + `"`
-	}
+func testAccSystemLoggingActionConfig(format, formatHCL string) string {
 	return fmt.Sprintf(`%v
 resource "routeros_system_logging_action" "action" {
 	name               = "action1"
@@ -61,5 +56,5 @@ resource "routeros_system_logging_action" "action" {
 	syslog_severity    = "notice"
 	syslog_time_format = "iso8601"
 }
-`, providerConfig, format, value)
+`, providerConfig, format, formatHCL)
 }

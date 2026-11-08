@@ -40,14 +40,17 @@ func TestAccBGPConnectionTest_basic(t *testing.T) {
 }
 
 func testAccBGPConnectionConfig(t *testing.T) string {
-	// RouterOS 7.20 moved as, router-id and cluster-id to /routing/bgp/instance.
+	// RouterOS 7.20 requires a BGP instance and moved router-id and cluster-id to it.
 	if testCheckMinVersion(t, "7.20") {
 		return testAccBGPConnectionInstanceConfig()
 	}
 	config := testAccBGPConnectionLegacyConfig()
-	// RouterOS 7.19 renamed input.accept-unknown to input.filter-unknown.
 	if testCheckMinVersion(t, "7.19") {
-		config = strings.Replace(config, "\t\taccept_unknown            = \"\"\n", "", 1)
+		line := "\t\taccept_unknown            = \"\"\n"
+		if !strings.Contains(config, line) {
+			t.Fatal("accept_unknown line not found in the BGP connection config")
+		}
+		config = strings.Replace(config, line, "", 1)
 	}
 	return config
 }
