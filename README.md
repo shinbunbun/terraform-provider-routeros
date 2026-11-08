@@ -45,8 +45,8 @@ For more in-depth documentation about each of the resources and datasources, ple
 
 ### Versions tested
 
-- go 1.24.2 and ROS 7.12, 7.15, 7.16 (stable)
-- This fork: ROS 7.22.3, 7.23.8 and 7.24.6 (CHR, REST)
+- CI: ROS 7.12, 7.15, 7.16 and 7.22 (vaerhme/routeros images, API and REST)
+- This fork, manually: ROS 7.22.3, 7.23.8 and 7.24.6 (CHR, REST)
 
 ## Changelog
 
@@ -70,7 +70,7 @@ mv main ~/.terraform.d/plugins/terraform.local/local/routeros/1.0.0/$(uname -s |
 required_providers {
   routeros = {
     source  = "shinbunbun/routeros"
-    version = "~> 1.101"
+    version = "~> 2.1"
   }
 }
 ```
