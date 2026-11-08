@@ -2,7 +2,7 @@
 
 ### Bug Fixes
 
-* **system_certificate:** `key_file_content` is now sensitive, so a private key written inline is no longer shown in plan output.
+* **system_certificate:** Mark `key_file_content` as sensitive in the schema.
 
 ### Documentation
 
