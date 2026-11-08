@@ -40,7 +40,6 @@ func TestAccBGPConnectionTest_basic(t *testing.T) {
 }
 
 func testAccBGPConnectionConfig(t *testing.T) string {
-	// RouterOS 7.20 requires a BGP instance and moved router-id and cluster-id to it.
 	if testCheckMinVersion(t, "7.20") {
 		return testAccBGPConnectionInstanceConfig()
 	}
