@@ -803,6 +803,10 @@ var (
 		return old == new || old == strings.ReplaceAll(new, "\t", "    ")
 	}
 
+	AlwaysPresentOrScriptTabsEqual = func(k, old, new string, d *schema.ResourceData) bool {
+		return ScriptTabsEqual(k, old, new, d) || AlwaysPresentNotUserProvided(k, old, new, d)
+	}
+
 	YesNoTrueFalseEqual = func(k, old, new string, d *schema.ResourceData) bool {
 		return yesNoTrueFalseEqual(old, new) || AlwaysPresentNotUserProvided(k, old, new, d)
 	}
