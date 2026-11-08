@@ -35,19 +35,19 @@ func TestAccIpVrfTest_basic(t *testing.T) {
 
 func testAccIpVrfConfig() string {
 	return providerConfig + `
-resource "routeros_interface_veth" "veth1" {
-	name    = "veth1"
+resource "routeros_interface_bridge" "vrf1" {
+	name    = "vrf-br1"
 }
 
-resource "routeros_interface_veth" "veth2" {
-	name    = "veth2"
+resource "routeros_interface_bridge" "vrf2" {
+	name    = "vrf-br2"
 }
 
 resource "routeros_ip_vrf" "test_vrf_a" {
 	disabled 	= true
 	name 		= "vrf_1"
-	interfaces 	= ["veth1", "veth2"]
-	depends_on  = [routeros_interface_veth.veth1, routeros_interface_veth.veth2]
+	interfaces 	= ["vrf-br1", "vrf-br2"]
+	depends_on  = [routeros_interface_bridge.vrf1, routeros_interface_bridge.vrf2]
 }
 `
 }

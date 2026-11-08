@@ -1,6 +1,7 @@
 package routeros
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -26,7 +27,7 @@ func TestAccBGPConnectionTest_basic(t *testing.T) {
 				CheckDestroy:      testCheckResourceDestroy("/routing/bgp/connection", "routeros_routing_bgp_connection"),
 				Steps: []resource.TestStep{
 					{
-						Config: testAccBGPConnectionConfig(),
+						Config: testAccBGPConnectionConfig(t),
 						Check: resource.ComposeTestCheckFunc(
 							testResourcePrimaryInstanceId(testBGPConnectionAddress),
 							resource.TestCheckResourceAttr(testBGPConnectionAddress, "name", "neighbor-test"),
@@ -38,7 +39,63 @@ func TestAccBGPConnectionTest_basic(t *testing.T) {
 	}
 }
 
-func testAccBGPConnectionConfig() string {
+func testAccBGPConnectionConfig(t *testing.T) string {
+	if testCheckMinVersion(t, "7.20") {
+		return testAccBGPConnectionInstanceConfig()
+	}
+	config := testAccBGPConnectionLegacyConfig()
+	if testCheckMinVersion(t, "7.19") {
+		line := "\t\taccept_unknown            = \"\"\n"
+		if !strings.Contains(config, line) {
+			t.Fatal("accept_unknown line not found in the BGP connection config")
+		}
+		config = strings.Replace(config, line, "", 1)
+	}
+	return config
+}
+
+func testAccBGPConnectionInstanceConfig() string {
+	return providerConfig + `
+resource "routeros_routing_bgp_instance" "test" {
+	as        = "65550"
+	name      = "bgp-connection-test"
+	router_id = "0.0.0.1"
+}
+
+resource "routeros_routing_bgp_connection" "test" {
+	add_path_out            = "none"
+	as                      = "65550"
+	cisco_vpls_nlri_len_fmt = "auto-bits"
+	connect                 = true
+	hold_time               = "infinity"
+	instance                = routeros_routing_bgp_instance.test.name
+	keepalive_time          = "4m"
+	listen                  = true
+	local {
+		address = "127.0.0.1"
+		port    = 22334
+		role    = "ebgp"
+		ttl     = "5"
+	}
+	multihop       = true
+	name           = "neighbor-test"
+	nexthop_choice = "default"
+	remote {
+		address    = "172.17.0.1"
+		allowed_as = "1111"
+		as         = "12345"
+		port       = "11223"
+		ttl        = "5"
+	}
+	routing_table = "main"
+	tcp_md5_key   = "poipoipoipoipoi"
+	use_bfd       = "true"
+	vrf           = "main"
+}
+`
+}
+
+func testAccBGPConnectionLegacyConfig() string {
 	return providerConfig + `
 resource "routeros_routing_bgp_connection" "test" {
 	add_path_out            = "none"

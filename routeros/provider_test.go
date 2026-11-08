@@ -1,6 +1,7 @@
 package routeros
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -263,4 +264,29 @@ func testCheckResourceExists(name string, resourcePath string, resource *Mikroti
 
 		return nil
 	}
+}
+
+// testCheckCommandExists reports whether the router under test has the menu, for example "/interface/veth",
+// which is only present when the package that provides it is installed. It returns true when it cannot tell.
+func testCheckCommandExists(t *testing.T, path string) bool {
+	host := reHost.FindStringSubmatch(os.Getenv("ROS_HOSTURL"))
+	if os.Getenv(resource.EnvTfAcc) == "" || host == nil {
+		return true
+	}
+	c := newRestClient(context.Background(), "https://"+host[1]+":443", os.Getenv("ROS_USERNAME"), os.Getenv("ROS_PASSWORD"))
+	_, err := ReadItems(nil, path, c)
+	if err != nil && strings.Contains(err.Error(), "no such command") {
+		return false
+	}
+	if err != nil {
+		t.Logf("could not check %v, running the test anyway: %v", path, err)
+	}
+	return true
+}
+
+func testCheckResourceAttrIf(cond bool, name, key, value string) resource.TestCheckFunc {
+	if !cond {
+		return func(*terraform.State) error { return nil }
+	}
+	return resource.TestCheckResourceAttr(name, key, value)
 }

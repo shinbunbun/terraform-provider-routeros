@@ -37,16 +37,10 @@ func TestAccInterfaceGre6Test_basic(t *testing.T) {
 func testAccInterfaceGre6Config() string {
 	return providerConfig + `
 
-resource "routeros_interface_veth" "veth_v6" {
-  name    = "veth_v6"
-  address = ["2a02::1/64"]
-}
-
 resource "routeros_interface_gre6" "gre_v6" {
   name           = "gre_v6"
   remote_address = "2a02::2"
   disabled       = true
-  depends_on  = [routeros_interface_veth.veth_v6]
 }
 `
 }

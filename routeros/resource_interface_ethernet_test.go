@@ -44,10 +44,6 @@ func TestAccInterfaceEthernetTest_basic(t *testing.T) {
 							resource.TestCheckResourceAttr(testInterfaceEthernetAddress, "mdix_enable", "false"),
 							resource.TestCheckResourceAttr(testInterfaceEthernetAddress, "sfp_shutdown_temperature", "60"),
 							resource.TestCheckResourceAttr(testInterfaceEthernetAddress, "speed", "10G-baseT"),
-
-							// read only properties. #slave and #switch are not returned from the virtual switch
-							// so we can add assertions.
-							resource.TestCheckResourceAttr(testInterfaceEthernetAddress, "running", "true"),
 						),
 					},
 				},

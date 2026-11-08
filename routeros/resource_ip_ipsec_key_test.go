@@ -10,6 +10,10 @@ import (
 const testIpIpsecKey = "routeros_ip_ipsec_key.test"
 
 func TestAccIpIpsecKeyTest_basic(t *testing.T) {
+	if testCheckMinVersion(t, "7.20") {
+		t.Skip("RouterOS 7.20 removed /ip/ipsec/key")
+	}
+
 	// t.Parallel()
 	for _, name := range testNames {
 		t.Run(name, func(t *testing.T) {

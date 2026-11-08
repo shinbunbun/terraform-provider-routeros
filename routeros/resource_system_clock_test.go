@@ -3,6 +3,7 @@ package routeros
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
@@ -26,14 +27,16 @@ func TestAccSystemClockTest_basic(t *testing.T) {
 }
 
 func makeSteps(name string) (res []resource.TestStep) {
+	// Newer RouterOS versions refuse a time before the package build time.
+	now := time.Now().UTC()
 	params := map[string]map[string]string{
 		"API": {
-			"date":           `2024-05-15`,
+			"date":           now.AddDate(0, 0, 1).Format("2006-01-02"),
 			"time":           `17:58:11`,
 			"time_zone_name": `EST`,
 		},
 		"REST": {
-			"date":           `2024-05-17`,
+			"date":           now.AddDate(0, 0, 2).Format("2006-01-02"),
 			"time":           `18:58:11`,
 			"time_zone_name": `UTC`,
 		},
