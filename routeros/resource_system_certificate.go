@@ -402,7 +402,7 @@ func ResourceSystemCertificate() *schema.Resource {
 				return diag.FromErr(err)
 			}
 
-			certFileId, diags := fileCreate(ctx, name, data, m)
+			_, diags := fileCreate(ctx, name, data, m)
 			if diags != nil {
 				return diags
 			}
@@ -411,7 +411,7 @@ func ResourceSystemCertificate() *schema.Resource {
 
 			bl["cert_file_name"] = name
 
-			defer fileDeleteIfExists(ctx, certFileId, m)
+			defer fileDeleteIfExists(ctx, name, m)
 		}
 
 		if data := bl["key_file_content"].(string); data != "" {
@@ -427,17 +427,17 @@ func ResourceSystemCertificate() *schema.Resource {
 
 			bl["key_file_name"] = name
 
-			keyFileId, diags := fileCreate(ctx, name, data, m)
+			_, diags := fileCreate(ctx, name, data, m)
 			if diags != nil {
 				return diags
 			}
 
 			ColorizedDebug(ctx, fmt.Sprintf("The private key has been placed on file '%v'", name))
 
-			defer fileDeleteIfExists(ctx, keyFileId, m)
+			defer fileDeleteIfExists(ctx, name, m)
 		}
 
-		importFile := func(fileName, counter string) diag.Diagnostics {
+		importFile := func(fileName, counter string) (imported bool, diags diag.Diagnostics) {
 			params := MikrotikItem{KeyName: certName, "file-name": fileName}
 			if passwd, ok := bl["passphrase"]; ok {
 				params["passphrase"] = passwd.(string)
@@ -445,19 +445,29 @@ func ResourceSystemCertificate() *schema.Resource {
 
 			var res []MikrotikItem
 			if err := m.(Client).SendRequest(crudImport, resUrl, params, &res); err != nil {
-				return diag.FromErr(err)
+				return false, diag.FromErr(err)
+			}
+			if len(res) != 1 {
+				return true, nil
 			}
 
-			// RouterOS reports a failed import (bad PEM, wrong passphrase) as a successful call with zero counters.
-			if len(res) == 1 && res[0][counter] == "0" {
-				return diag.Errorf("nothing was imported from file %q: %v=0, decryption-failures=%v",
-					fileName, counter, res[0]["decryption-failures"])
+			// RouterOS reports a failed import (bad PEM, wrong passphrase) as a successful call.
+			r := res[0]
+			for _, k := range []string{"decryption-failures", "keys-with-no-certificate"} {
+				if v := r[k]; v != "" && v != "0" {
+					return false, diag.Errorf("importing file %q failed: %v=%v", fileName, k, v)
+				}
 			}
-			return nil
+			return r[counter] != "0", nil
 		}
 
-		if diags := importFile(bl["cert_file_name"].(string), "certificates-imported"); diags.HasError() {
+		imported, diags := importFile(bl["cert_file_name"].(string), "certificates-imported")
+		if diags.HasError() {
 			return diags
+		}
+		if !imported {
+			return diag.Errorf("no certificate was imported from file %q; RouterOS skips a certificate that "+
+				"already exists on the router, possibly under another name", bl["cert_file_name"])
 		}
 
 		res, err := ReadItemsFiltered([]string{"name=" + certName},
@@ -480,8 +490,18 @@ func ResourceSystemCertificate() *schema.Resource {
 		}
 
 		if keyFile, ok := bl["key_file_name"]; ok && keyFile.(string) != "" {
-			if diags := importFile(keyFile.(string), "private-keys-imported"); diags.HasError() {
+			imported, diags := importFile(keyFile.(string), "private-keys-imported")
+			if diags.HasError() {
 				return diags
+			}
+			if !imported {
+				cert, err := ReadItems(&ItemId{Id, d.Id()}, resSchema[MetaResourcePath].Default.(string), m.(Client))
+				if err != nil {
+					return diag.FromErr(err)
+				}
+				if len(*cert) != 1 || (*cert)[0]["private-key"] != "true" {
+					return diag.Errorf("no private key was imported from file %q", keyFile)
+				}
 			}
 		}
 

@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -87,6 +88,8 @@ func TestAccSystemCertificatesTest_importFileName(t *testing.T) {
 
 	for _, name := range testNames {
 		t.Run(name, func(t *testing.T) {
+			fileName := "external-" + acctest.RandString(8)
+
 			resource.Test(t, resource.TestCase{
 				PreCheck: func() {
 					testAccPreCheck(t)
@@ -97,10 +100,10 @@ func TestAccSystemCertificatesTest_importFileName(t *testing.T) {
 				Steps: []resource.TestStep{
 					{
 						PreConfig: func() {
-							testUploadFile(t, "external-name.crt", testCertificateImportCert)
-							testUploadFile(t, "external-name.key", testCertificateImportKey)
+							testUploadFile(t, fileName+".crt", testCertificateImportCert)
+							testUploadFile(t, fileName+".key", testCertificateImportKey)
 						},
-						Config: testAccSystemCertificatesImportFileNameConfig(),
+						Config: testAccSystemCertificatesImportFileNameConfig(fileName),
 						Check: resource.ComposeTestCheckFunc(
 							testResourcePrimaryInstanceId(testSystemCertificatesImportAddress),
 							resource.TestCheckResourceAttr(testSystemCertificatesImportAddress, "common_name", "External Certificate"),
@@ -134,7 +137,7 @@ func TestAccSystemCertificatesTest_importWrongPassphrase(t *testing.T) {
 				Steps: []resource.TestStep{
 					{
 						Config:      testAccSystemCertificatesImportWrongPassphraseConfig(),
-						ExpectError: regexp.MustCompile(`nothing was imported from file .*private-keys-imported=0`),
+						ExpectError: regexp.MustCompile(`no private key was imported from file`),
 					},
 				},
 			})
@@ -183,14 +186,14 @@ resource "routeros_system_certificate" "external" {
 `
 }
 
-func testAccSystemCertificatesImportFileNameConfig() string {
+func testAccSystemCertificatesImportFileNameConfig(fileName string) string {
 	return providerConfig + `
 resource "routeros_system_certificate" "external" {
 	name        = "external.crt"
 	common_name = "External Certificate"
 	import {
-		cert_file_name = "external-name.crt"
-		key_file_name  = "external-name.key"
+		cert_file_name = "` + fileName + `.crt"
+		key_file_name  = "` + fileName + `.key"
 		passphrase     = "11111111"
 	}
 }

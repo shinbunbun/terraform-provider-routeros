@@ -149,12 +149,15 @@ func fileDelete(ctx context.Context, id string, m interface{}) diag.Diagnostics 
 	return nil
 }
 
-func fileDeleteIfExists(ctx context.Context, id string, m interface{}) {
-	res, err := ReadItems(&ItemId{Id, id}, "/file", m.(Client))
-	if err == nil && len(*res) == 0 {
+func fileDeleteIfExists(ctx context.Context, name string, m interface{}) {
+	res, err := ReadItemsFiltered([]string{"name=" + name}, "/file", m.(Client))
+	if err != nil {
+		ColorizedMessage(ctx, ERROR, "Temporary file lookup error", map[string]interface{}{"name": name, "error": err})
 		return
 	}
-	if diags := fileDelete(ctx, id, m); diags != nil {
-		ColorizedMessage(ctx, ERROR, "Temporary file deletion error", map[string]interface{}{"diags": diags})
+	for _, f := range *res {
+		if diags := fileDelete(ctx, f.GetID(Id), m); diags != nil {
+			ColorizedMessage(ctx, ERROR, "Temporary file deletion error", map[string]interface{}{"name": name, "diags": diags})
+		}
 	}
 }
