@@ -60,8 +60,9 @@ func ResourceRoutingBgpTemplate() *schema.Resource {
 		"add_path_out": {
 			Type:         schema.TypeString,
 			Optional:     true,
-			Description:  "",
+			Description:  "RouterOS up to 7.21 only; the provider does not send it to 7.22 or later unless it is set in the configuration.",
 			Default:      "none",
+			Deprecated:   "Removed in ROS v7.22",
 			ValidateFunc: validation.StringInSlice([]string{"all", "none"}, false),
 		},
 		"address_families": {

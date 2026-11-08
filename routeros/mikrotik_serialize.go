@@ -148,6 +148,8 @@ func TerraformResourceDataToMikrotik(s map[string]*schema.Schema, d *schema.Reso
 		setUnsetFields = loadSkipFields(suf.Default.(string))
 	}
 
+	removedFields := driftAttributeSlice.GetRemoved(RouterOSVersion, s[MetaResourcePath].Default.(string))
+
 	// Schema map iteration.
 	for terraformSnakeName, terraformMetadata := range s {
 		// Fill in the metadata fields.
@@ -172,6 +174,11 @@ func TerraformResourceDataToMikrotik(s map[string]*schema.Schema, d *schema.Reso
 
 		// Skip all read-only properties.
 		if terraformMetadata.Computed && !terraformMetadata.Optional {
+			continue
+		}
+
+		// Send an attribute this RouterOS version no longer accepts only when it is configured, so RouterOS rejects it.
+		if _, ok := removedFields[terraformSnakeName]; ok && rawConfig.GetAttr(terraformSnakeName).IsNull() {
 			continue
 		}
 

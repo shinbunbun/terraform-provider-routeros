@@ -77,10 +77,33 @@ func (do *driftObjects) GetDriftMap(ros, resName string, reverse bool) (res map[
 	for i := range *do {
 		if version >= (*do)[i].Version {
 			for _, attr := range (*do)[i].Resources[resName] {
+				if attr.MT == "" {
+					continue
+				}
 				if !reverse {
 					res[attr.TF] = attr.MT
 				} else {
 					res[attr.MT] = attr.TF
+				}
+			}
+		}
+	}
+	return
+}
+
+// Attributes that RouterOS no longer accepts: the drift entries with an empty MikroTik name.
+func (do *driftObjects) GetRemoved(ros, resName string) (res map[string]struct{}) {
+	version, err := parseRouterOSVersion(ros)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	res = map[string]struct{}{}
+	for i := range *do {
+		if version >= (*do)[i].Version {
+			for _, attr := range (*do)[i].Resources[resName] {
+				if attr.MT == "" {
+					res[attr.TF] = struct{}{}
 				}
 			}
 		}

@@ -48,3 +48,20 @@ func TestBuildDatasourceReadFilter(t *testing.T) {
 		}
 	}
 }
+
+func TestDriftRemovedBgpAddPathOut(t *testing.T) {
+	for _, path := range []string{"/routing/bgp/template", "/routing/bgp/connection"} {
+		if _, ok := driftAttributeSlice.GetRemoved("7.21", path)["add_path_out"]; ok {
+			t.Errorf("%v: add_path_out removed on 7.21", path)
+		}
+		if _, ok := driftAttributeSlice.GetRemoved("7.22", path)["add_path_out"]; !ok {
+			t.Errorf("%v: add_path_out not removed on 7.22", path)
+		}
+		if _, ok := driftAttributeSlice.GetDriftMap("7.22", path, false)["add_path_out"]; ok {
+			t.Errorf("%v: add_path_out is in the forward drift map", path)
+		}
+		if _, ok := driftAttributeSlice.GetDriftMap("7.22", path, true)[""]; ok {
+			t.Errorf("%v: empty MikroTik name is in the reverse drift map", path)
+		}
+	}
+}
