@@ -25,6 +25,7 @@ jobs:
 
     steps:
       - name: Container check
+        timeout-minutes: 10
         run: |
           echo "Wait for the container to finish launching..."
           while true; do

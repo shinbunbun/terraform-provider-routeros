@@ -1,10 +1,10 @@
-## Unreleased
+## [2.1.0](https://github.com/shinbunbun/terraform-provider-routeros/compare/v2.0.0...v2.1.0) (2026-11-08)
 
 ### Bug Fixes
 
-* **routing_bgp_connection, routing_bgp_template:** Stop sending `add_path_out` to RouterOS 7.22 and later unless it is set to a value other than `none`. RouterOS 7.22 removed `add-path-out`, and the provider sent its default `none` on every create and update, so both failed with `unknown parameter add-path-out`. `add_path_out` is now deprecated.
+* **routing_bgp_connection, routing_bgp_template:** Stop sending `add_path_out` to RouterOS 7.22 and later unless it is set to a value other than `none`. RouterOS 7.22 removed `add-path-out`, and the provider sent its default `none` on every create and update, so both failed with `unknown parameter add-path-out`.
 * **system_script, system_scheduler, tool_netwatch, ppp_profile, interface_vrrp, ip_dhcp_server, ip_dhcp_client, ipv6_dhcp_server, ipv6_dhcp_client, ip_hotspot_user_profile, system_routerboard_button_*:** Ignore the difference between a tab and four spaces in script attributes. RouterOS 7.20 and later store each tab as four spaces, so a script indented with tabs showed a change on every plan.
-* **interface_vxlan, ip_hotspot_ip_binding, ipv6_address:** Do not show a change for `hw`, `server` and `advertise` when they are not set and RouterOS returns its default (`true`, `all` and `true` for a /64).
+* **interface_vxlan, ip_hotspot_ip_binding, ipv6_address:** Do not show a change for `hw`, `server` and `advertise` when they are not set in the configuration, whatever RouterOS returns. RouterOS fills in defaults for them (`true`, `all`, and `true` for a /64).
 * **ip_cloud:** Treat `yes`/`no` and `true`/`false` in `ddns_enabled` as equal, and do not show a change when it is not set. RouterOS 7.22 returns `yes`.
 * **system_certificate:** Mark `key_file_content` as sensitive in the schema.
 * **system_certificate:** Fail the import when RouterOS reports decryption failures or a key without a certificate, imports no certificate, or leaves the certificate without its private key (for example a wrong `passphrase`). RouterOS reports these as successful calls, so the resource was created without its key.
@@ -12,6 +12,10 @@
 * **system_certificate:** Record the certificate in state before importing the key, so a failed key import leaves a tainted resource instead of an untracked certificate.
 * **system_certificate:** Include the certificate name in import lookup errors.
 * **system_certificate:** Retry the import while a just-uploaded file is not yet selectable (`input does not match any value of file-name`, seen on RouterOS 7.16 over the API).
+
+### Deprecations
+
+* **routing_bgp_connection, routing_bgp_template:** `add_path_out` is deprecated. It still works on RouterOS 7.21 and earlier. RouterOS 7.22 removed `add-path-out`; the provider then drops `none`, and any other value fails the apply. Removing a non-default value from the configuration on 7.21 resets it to `none` on the router.
 
 ### Documentation
 
