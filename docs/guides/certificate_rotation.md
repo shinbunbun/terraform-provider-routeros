@@ -57,11 +57,6 @@ resource "routeros_system_certificate" "server_cert" {
     cert_file_content = tls_locally_signed_cert.server_cert.cert_pem
     key_file_content  = tls_private_key.server_key.private_key_pem
   }
-  lifecycle {
-    replace_triggered_by = [
-      tls_locally_signed_cert.server_cert.cert_pem
-    ]
-  }
 }
 
 output "cert_serial_nubmer_on_device" {

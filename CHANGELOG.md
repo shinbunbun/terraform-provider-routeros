@@ -1,3 +1,13 @@
+## Unreleased
+
+### Bug Fixes
+
+* **system_certificate:** `key_file_content` is now sensitive, so a private key written inline is no longer shown in plan output.
+
+### Documentation
+
+* **system_certificate:** Note that RouterOS deletes imported files, and use `cert_file_content` / `key_file_content` in the certificate rotation guide instead of `routeros_file`.
+
 ## [2.0.0](https://github.com/shinbunbun/terraform-provider-routeros/compare/v1.102.0...v2.0.0) (2026-11-07)
 
 ### ⚠ BREAKING CHANGES
