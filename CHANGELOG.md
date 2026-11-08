@@ -2,6 +2,7 @@
 
 ### Bug Fixes
 
+* **routing_bgp_connection, routing_bgp_template:** Stop sending `add_path_out` to RouterOS 7.22 and later unless it is set to a value other than `none`. RouterOS 7.22 removed `add-path-out`, and the provider sent its default `none` on every create and update, so both failed with `unknown parameter add-path-out`. `add_path_out` is now deprecated.
 * **system_certificate:** Mark `key_file_content` as sensitive in the schema.
 * **system_certificate:** Fail the import when RouterOS reports decryption failures or a key without a certificate, imports no certificate, or leaves the certificate without its private key (for example a wrong `passphrase`). RouterOS reports these as successful calls, so the resource was created without its key.
 * **system_certificate:** Remove the temporary files created for `cert_file_content` and `key_file_content` when an import fails, and stop logging an error when RouterOS has already deleted them.

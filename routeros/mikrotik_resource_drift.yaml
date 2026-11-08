@@ -37,6 +37,13 @@
   /ip/ssh:
     - tf: always-allow-password-login
       mt: password-authentication
+7.22:
+  /routing/bgp/connection:
+    - tf: add_path_out
+      mt: "-"
+  /routing/bgp/template:
+    - tf: add_path_out
+      mt: "-"
 7.24:
   /ip/service:
     - tf: address
