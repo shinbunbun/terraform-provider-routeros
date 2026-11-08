@@ -181,6 +181,7 @@ func ResourceIPv6DhcpClient() *schema.Resource {
 				"\n  * na-valid - if the address is acquired by the client;" +
 				"\n  * na-address - the address acquired by the client if any." +
 				"\n  * options - array of received options (only ROSv7)",
+			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"status": {
 			Type:     schema.TypeString,

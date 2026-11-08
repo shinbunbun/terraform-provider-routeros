@@ -157,11 +157,13 @@ func ResourcePPPProfile() *schema.Resource {
 			Optional: true,
 			Description: "Execute script on user login-event. These are available variables that are accessible " +
 				"for the event script:\n  * user\n  * local-address\n  * remote-address\n  * caller-id\n  * called-id\n  * interface.",
+			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"on_down": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Execute script on user logging off. See on-up for more details.",
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "Execute script on user logging off. See on-up for more details.",
+			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"only_one": {
 			Type:     schema.TypeString,

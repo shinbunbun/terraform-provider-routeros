@@ -115,9 +115,10 @@ func ResourceDhcpServer() *schema.Resource {
 		KeyInterface: PropInterfaceRw,
 		KeyInvalid:   PropInvalidRo,
 		"lease_script": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "A script that will be executed after a lease is assigned or de-assigned.",
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "A script that will be executed after a lease is assigned or de-assigned.",
+			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"lease_time": {
 			Type:     schema.TypeString,

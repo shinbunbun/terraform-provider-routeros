@@ -3,6 +3,9 @@
 ### Bug Fixes
 
 * **routing_bgp_connection, routing_bgp_template:** Stop sending `add_path_out` to RouterOS 7.22 and later unless it is set to a value other than `none`. RouterOS 7.22 removed `add-path-out`, and the provider sent its default `none` on every create and update, so both failed with `unknown parameter add-path-out`. `add_path_out` is now deprecated.
+* **system_script, system_scheduler, tool_netwatch, ppp_profile, interface_vrrp, ip_dhcp_server, ip_dhcp_client, ipv6_dhcp_server, ipv6_dhcp_client, ip_hotspot_user_profile, system_routerboard_button_*:** Ignore the difference between a tab and four spaces in script attributes. RouterOS 7.20 and later store each tab as four spaces, so a script indented with tabs showed a change on every plan.
+* **interface_vxlan, ip_hotspot_ip_binding, ipv6_address:** Do not show a change for `hw`, `server` and `advertise` when they are not set and RouterOS returns its default (`true`, `all` and `true` for a /64).
+* **ip_cloud:** Treat `yes`/`no` and `true`/`false` in `ddns_enabled` as equal, and do not show a change when it is not set. RouterOS 7.22 returns `yes`.
 * **system_certificate:** Mark `key_file_content` as sensitive in the schema.
 * **system_certificate:** Fail the import when RouterOS reports decryption failures or a key without a certificate, imports no certificate, or leaves the certificate without its private key (for example a wrong `passphrase`). RouterOS reports these as successful calls, so the resource was created without its key.
 * **system_certificate:** Remove the temporary files created for `cert_file_content` and `key_file_content` when an import fails, and stop logging an error when RouterOS has already deleted them.

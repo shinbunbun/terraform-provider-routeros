@@ -29,7 +29,7 @@ func ResourceSystemRouterboardButtonMode() *schema.Resource {
 			Type:             schema.TypeString,
 			Optional:         true,
 			Description:      "An option to set the script that will be run upon pressing the button.",
-			DiffSuppressFunc: AlwaysPresentNotUserProvided,
+			DiffSuppressFunc: AlwaysPresentOrScriptTabsEqual,
 		},
 	}
 

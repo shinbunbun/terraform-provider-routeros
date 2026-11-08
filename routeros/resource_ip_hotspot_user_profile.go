@@ -141,6 +141,7 @@ func ResourceIpHotspotUserProfile() *schema.Resource {
 				"$user logged in!`` . If hotspot is set on bridge interface, then interface variable will show bridge " +
 				"as actual interface unless use-ip-firewall' is set in bridge settings. List of available variables: " +
 				"$user $username (alternative var name for $user) $address $``mac-address`` $interface.",
+			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"on_logout": {
 			Type:     schema.TypeString,
@@ -153,6 +154,7 @@ func ResourceIpHotspotUserProfile() *schema.Resource {
 				"$uptime-secs - final session time in seconds $bytes-in - bytes uploaded $bytes-out - bytes downloaded " +
 				"$bytes-total - bytes up + bytes down $packets-in - packets uploaded $packets-out - packets downloaded " +
 				"$packets-total - packets up + packets down.",
+			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"open_status_page": {
 			Type:     schema.TypeString,

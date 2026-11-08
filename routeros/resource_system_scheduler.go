@@ -28,9 +28,10 @@ func ResourceSystemScheduler() *schema.Resource {
 			Computed: true,
 		},
 		"on_event": {
-			Type:        schema.TypeString,
-			Required:    true,
-			Description: "Name of the script to execute. It must be presented at /system script.",
+			Type:             schema.TypeString,
+			Required:         true,
+			Description:      "Name of the script to execute. It must be presented at /system script.",
+			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"owner": {
 			Type:     schema.TypeString,

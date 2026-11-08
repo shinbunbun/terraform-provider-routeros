@@ -799,6 +799,18 @@ var (
 		return iOld == iNew
 	}
 
+	ScriptTabsEqual = func(k, old, new string, d *schema.ResourceData) bool {
+		return old == new || old == strings.ReplaceAll(new, "\t", "    ")
+	}
+
+	AlwaysPresentOrScriptTabsEqual = func(k, old, new string, d *schema.ResourceData) bool {
+		return ScriptTabsEqual(k, old, new, d) || AlwaysPresentNotUserProvided(k, old, new, d)
+	}
+
+	YesNoTrueFalseEqual = func(k, old, new string, d *schema.ResourceData) bool {
+		return yesNoTrueFalseEqual(old, new) || AlwaysPresentNotUserProvided(k, old, new, d)
+	}
+
 	// AlwaysPresentNotUserProvided is a SupressDiff function that prevents values not provided by users to get updated.
 	// This is necessary in some system-wide fields that are present regardless if the users provides any values.
 	// Prevents the need of hardcode values for default values, as those are harder to track over time/versions of
@@ -916,10 +928,10 @@ var (
 // the ROS API omits it for single hosts. ImplicitSingleHostCIDR should only be used where ROS does otherwise
 // admit a prefix length, i.e. `192.168.1.2/24` would both write and read back as such for the same parameter.
 func ImplicitSingleHostCIDR4(k, old, new string, d *schema.ResourceData) bool {
-	return new == old + "/32"
+	return new == old+"/32"
 }
 func ImplicitSingleHostCIDR6(k, old, new string, d *schema.ResourceData) bool {
-	return new == old + "/128"
+	return new == old+"/128"
 }
 
 func buildReadFilter(m map[string]any) []string {
@@ -954,3 +966,7 @@ var DeleteSystemObject = []diag.Diagnostic{{
 		"This action will remove the object from the Terraform state. " +
 		"See also: 'terraform state rm' https://developer.hashicorp.com/terraform/cli/commands/state/rm",
 }}
+
+func yesNoTrueFalseEqual(old, new string) bool {
+	return BoolFromMikrotikJSONStr(old) == BoolFromMikrotikJSONStr(new)
+}

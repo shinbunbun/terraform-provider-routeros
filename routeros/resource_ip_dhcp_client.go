@@ -110,9 +110,10 @@ func ResourceDhcpClient() *schema.Resource {
 			Description: "The IP address of the primary NTP server, assigned by the DHCP server.",
 		},
 		"script": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "A script.",
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "A script.",
+			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"secondary_dns": {
 			Type:        schema.TypeString,
