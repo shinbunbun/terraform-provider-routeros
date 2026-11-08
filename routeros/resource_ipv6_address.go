@@ -98,6 +98,7 @@ func ResourceIPv6Address() *schema.Resource {
 			Description: "Whether to enable stateless address configuration. The prefix of that address is " +
 				"automatically advertised to hosts using ICMPv6 protocol. The option is set by default for addresses " +
 				"with prefix length 64.",
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
 		},
 		"actual_interface": { // RO
 			Type:        schema.TypeString,

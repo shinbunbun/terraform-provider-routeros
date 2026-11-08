@@ -83,6 +83,7 @@ policy = ["ftp", "read", "write"]
 			Type:        schema.TypeString,
 			Required:    true,
 			Description: "Script source code.",
+			DiffSuppressFunc: ScriptTabsEqual,
 		},
 	}
 

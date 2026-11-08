@@ -803,6 +803,15 @@ var (
 	// This is necessary in some system-wide fields that are present regardless if the users provides any values.
 	// Prevents the need of hardcode values for default values, as those are harder to track over time/versions of
 	// routeros
+	// RouterOS 7.20 and later store each tab in a script as four spaces.
+	ScriptTabsEqual = func(k, old, new string, d *schema.ResourceData) bool {
+		return old == new || old == strings.ReplaceAll(new, "\t", "    ")
+	}
+
+	YesNoTrueFalseEqual = func(k, old, new string, d *schema.ResourceData) bool {
+		return BoolFromMikrotikJSONStr(old) == BoolFromMikrotikJSONStr(new)
+	}
+
 	AlwaysPresentNotUserProvided = func(k, old, new string, d *schema.ResourceData) bool {
 		value := d.GetRawConfig()
 

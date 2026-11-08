@@ -2,6 +2,9 @@
 
 ### Bug Fixes
 
+* **system_script, system_scheduler, tool_netwatch, ppp_profile:** Ignore the difference between a tab and four spaces in script attributes. RouterOS 7.20 and later store each tab as four spaces, so a script indented with tabs showed a change on every plan.
+* **interface_vxlan, ip_hotspot_ip_binding, ipv6_address:** Do not show a change for `hw`, `server` and `advertise` when they are not set and RouterOS returns its default (`true`, `all` and `true` for a /64).
+* **ip_cloud:** Treat `yes`/`no` and `true`/`false` in `ddns_enabled` as equal. RouterOS 7.22 returns `yes`.
 * **system_certificate:** Mark `key_file_content` as sensitive in the schema.
 
 ### Documentation

@@ -223,3 +223,39 @@ func TestImplicitSingleHostCIDR4(t *testing.T) {
 		})
 	}
 }
+
+func TestScriptTabsEqual(t *testing.T) {
+	tests := []struct {
+		old, new string
+		want     bool
+	}{
+		{"a\tb", "a\tb", true},
+		{"    :log info \"x\"\n", "\t:log info \"x\"\n", true},
+		{"a        b", "a\t\tb", true},
+		{"a  b", "a\tb", false},
+		{"a b", "a c", false},
+	}
+	for _, tt := range tests {
+		if got := ScriptTabsEqual("source", tt.old, tt.new, nil); got != tt.want {
+			t.Errorf("ScriptTabsEqual(%q, %q) = %v, want %v", tt.old, tt.new, got, tt.want)
+		}
+	}
+}
+
+func TestYesNoTrueFalseEqual(t *testing.T) {
+	tests := []struct {
+		old, new string
+		want     bool
+	}{
+		{"yes", "true", true},
+		{"no", "false", true},
+		{"auto", "auto", true},
+		{"yes", "false", false},
+		{"auto", "true", false},
+	}
+	for _, tt := range tests {
+		if got := YesNoTrueFalseEqual("ddns_enabled", tt.old, tt.new, nil); got != tt.want {
+			t.Errorf("YesNoTrueFalseEqual(%q, %q) = %v, want %v", tt.old, tt.new, got, tt.want)
+		}
+	}
+}

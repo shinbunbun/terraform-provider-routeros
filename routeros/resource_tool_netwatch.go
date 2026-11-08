@@ -45,6 +45,7 @@ func ResourceToolNetwatch() *schema.Resource {
 			Type:        schema.TypeString,
 			Optional:    true,
 			Description: "Script to execute on the event of probe state change `OK` --> `fail`.",
+			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"early_failure_detection": {
 			Type:     schema.TypeBool,
@@ -97,6 +98,7 @@ func ResourceToolNetwatch() *schema.Resource {
 			Type:        schema.TypeString,
 			Optional:    true,
 			Description: "Script to execute at the end of every probe test.",
+			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"timeout": {
 			Type:             schema.TypeString,
@@ -120,6 +122,7 @@ func ResourceToolNetwatch() *schema.Resource {
 			Type:        schema.TypeString,
 			Optional:    true,
 			Description: "Script to execute on the event of probe state change `fail` --> `OK`.",
+			DiffSuppressFunc: ScriptTabsEqual,
 		},
 
 		// ICMP probe options

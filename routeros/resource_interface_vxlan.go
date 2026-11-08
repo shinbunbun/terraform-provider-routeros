@@ -93,6 +93,7 @@ func ResourceInterfaceVxlan() *schema.Resource {
 		"hw": {
 			Type:     schema.TypeBool,
 			Optional: true,
+			DiffSuppressFunc: AlwaysPresentNotUserProvided,
 		},
 		KeyHwOffloaded: PropHwOffloadedRo,
 		"interface": {
