@@ -447,7 +447,7 @@ func ResourceSystemCertificate() *schema.Resource {
 
 			var res []MikrotikItem
 			var err error
-			// A file added a moment ago may not be selectable yet (seen on 7.16 over the API).
+			// A file added a moment ago may not be selectable yet.
 			for attempt := 0; attempt < 10; attempt++ {
 				res = nil
 				err = m.(Client).SendRequest(crudImport, resUrl, params, &res)
