@@ -50,24 +50,13 @@ output "cert_serial_number_expected" {
   value = format("%x", tls_locally_signed_cert.server_cert.id)
 }
 
-resource "routeros_file" "server_key" {
-  name     = "server.key"
-  contents = tls_private_key.server_key.private_key_pem
-}
-
-resource "routeros_file" "server_cert" {
-  name     = "server.crt"
-  contents = tls_locally_signed_cert.server_cert.cert_pem
-}
-
-resource “routeros_system_certificate” “server_cert” {
-  name = “server”
+resource "routeros_system_certificate" "server_cert" {
+  name        = "server"
   common_name = tls_cert_request.server_csr.subject[0].common_name
   import {
-    cert_file_name = routeros_file.server_cert.name
-    key_file_name = routeros_file.server_key.name
+    cert_file_content = tls_locally_signed_cert.server_cert.cert_pem
+    key_file_content  = tls_private_key.server_key.private_key_pem
   }
-  depends_on = [routeros_file.server_cert, routeros_file.server_key]
   lifecycle {
     replace_triggered_by = [
       tls_locally_signed_cert.server_cert.cert_pem
