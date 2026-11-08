@@ -254,8 +254,8 @@ func TestYesNoTrueFalseEqual(t *testing.T) {
 		{"auto", "true", false},
 	}
 	for _, tt := range tests {
-		if got := YesNoTrueFalseEqual("ddns_enabled", tt.old, tt.new, nil); got != tt.want {
-			t.Errorf("YesNoTrueFalseEqual(%q, %q) = %v, want %v", tt.old, tt.new, got, tt.want)
+		if got := yesNoTrueFalseEqual(tt.old, tt.new); got != tt.want {
+			t.Errorf("yesNoTrueFalseEqual(%q, %q) = %v, want %v", tt.old, tt.new, got, tt.want)
 		}
 	}
 }

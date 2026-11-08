@@ -160,9 +160,9 @@ func ResourcePPPProfile() *schema.Resource {
 			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"on_down": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Execute script on user logging off. See on-up for more details.",
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "Execute script on user logging off. See on-up for more details.",
 			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"only_one": {

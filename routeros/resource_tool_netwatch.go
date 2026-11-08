@@ -42,9 +42,9 @@ func ResourceToolNetwatch() *schema.Resource {
 		KeyComment:  PropCommentRw,
 		KeyDisabled: PropDisabledRw,
 		"down_script": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Script to execute on the event of probe state change `OK` --> `fail`.",
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "Script to execute on the event of probe state change `OK` --> `fail`.",
 			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"early_failure_detection": {
@@ -95,9 +95,9 @@ func ResourceToolNetwatch() *schema.Resource {
 			DiffSuppressFunc: TimeEqual,
 		},
 		"test_script": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Script to execute at the end of every probe test.",
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "Script to execute at the end of every probe test.",
 			DiffSuppressFunc: ScriptTabsEqual,
 		},
 		"timeout": {
@@ -119,9 +119,9 @@ func ResourceToolNetwatch() *schema.Resource {
 			DiffSuppressFunc: AlwaysPresentNotUserProvided,
 		},
 		"up_script": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Script to execute on the event of probe state change `fail` --> `OK`.",
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "Script to execute on the event of probe state change `fail` --> `OK`.",
 			DiffSuppressFunc: ScriptTabsEqual,
 		},
 
