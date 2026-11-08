@@ -1,3 +1,13 @@
+## Unreleased
+
+### Bug Fixes
+
+* **system_certificate:** Mark `key_file_content` as sensitive in the schema.
+
+### Documentation
+
+* **system_certificate:** Note that RouterOS deletes imported files, and use `cert_file_content` / `key_file_content` in the certificate rotation guide instead of `routeros_file`.
+
 ## [2.0.0](https://github.com/shinbunbun/terraform-provider-routeros/compare/v1.102.0...v2.0.0) (2026-11-07)
 
 ### ⚠ BREAKING CHANGES
