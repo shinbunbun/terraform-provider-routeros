@@ -60,7 +60,7 @@ func ResourceRoutingBgpTemplate() *schema.Resource {
 		"add_path_out": {
 			Type:         schema.TypeString,
 			Optional:     true,
-			Description:  "RouterOS up to 7.21 only. RouterOS 7.22 and later receive it only when it is set to a value other than `none`.",
+			Description:  "RouterOS up to 7.21 only. On RouterOS 7.22 and later `none` is not sent, and any other value fails the apply with `unknown parameter add-path-out`.",
 			Default:      "none",
 			Deprecated:   DeprecatedInfo("7.22"),
 			ValidateFunc: validation.StringInSlice([]string{"all", "none"}, false),
