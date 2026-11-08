@@ -22,7 +22,7 @@ func TestAccRoutingBgpVpnTest_basic(t *testing.T) {
 				CheckDestroy:      testCheckResourceDestroy("/routing/bgp/vpn", "routeros_routing_bgp_vpn"),
 				Steps: []resource.TestStep{
 					{
-						Config: testAccRoutingBgpVpnConfig(),
+						Config: testAccRoutingBgpVpnConfig(t),
 						Check: resource.ComposeTestCheckFunc(
 							testResourcePrimaryInstanceId(testRoutingBgpVpn),
 							resource.TestCheckResourceAttr(testRoutingBgpVpn, "disabled", "false"),
@@ -38,8 +38,20 @@ func TestAccRoutingBgpVpnTest_basic(t *testing.T) {
 	}
 }
 
-func testAccRoutingBgpVpnConfig() string {
+func testAccRoutingBgpVpnConfig(t *testing.T) string {
+	// RouterOS 7.20 requires a BGP instance for a VPN.
+	instance, instanceRef := "", ""
+	if testCheckMinVersion(t, "7.20") {
+		instance = `
+resource "routeros_routing_bgp_instance" "vpn" {
+  as   = "65000"
+  name = "bgp-vpn-test"
+}
+`
+		instanceRef = "instance = routeros_routing_bgp_instance.vpn.name"
+	}
 	return fmt.Sprintf(`%v
+%v
 
 resource "routeros_routing_bgp_vpn" "test" {
   disabled = false
@@ -54,6 +66,7 @@ resource "routeros_routing_bgp_vpn" "test" {
   name                    = "bgp-mpls-vpn-test"
   route_distinguisher     = "1.2.3.4:1"
   vrf                     = "main"
+  %v
 }
-`, providerConfig)
+`, providerConfig, instance, instanceRef)
 }

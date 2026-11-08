@@ -15,6 +15,9 @@ func TestAccOpenVPNServerTest_basic(t *testing.T) {
 		t.Logf("Test skipped, the minimum required version is %v", testOpenVPNServerMinVersion)
 		return
 	}
+	if testCheckMinVersion(t, "7.17") {
+		t.Skip("RouterOS 7.17 turned /interface/ovpn-server/server into a list, which routeros_ovpn_server does not model")
+	}
 
 	for _, name := range testNames {
 		t.Run(name, func(t *testing.T) {

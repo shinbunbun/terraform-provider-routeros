@@ -9,6 +9,10 @@ import (
 const testInterfaceVethAddress = "routeros_interface_veth.test"
 
 func TestAccInterfaceVethTest_basic(t *testing.T) {
+	if !testCheckCommandExists(t, "/interface/veth") {
+		t.Skip("/interface/veth is not available (RouterOS 7.21 and later need the container package)")
+	}
+
 	for _, name := range testNames {
 		t.Run(name, func(t *testing.T) {
 			resource.Test(t, resource.TestCase{

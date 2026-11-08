@@ -1,6 +1,7 @@
 package routeros
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -263,4 +264,19 @@ func testCheckResourceExists(name string, resourcePath string, resource *Mikroti
 
 		return nil
 	}
+}
+
+// testCheckCommandExists reports whether the router under test has the menu, for example "/interface/veth",
+// which is only present when the package that provides it is installed.
+func testCheckCommandExists(t *testing.T, path string) bool {
+	host := reHost.FindStringSubmatch(os.Getenv("ROS_HOSTURL"))[1]
+	c := newRestClient(context.Background(), "https://"+host+":443", os.Getenv("ROS_USERNAME"), os.Getenv("ROS_PASSWORD"))
+	_, err := ReadItems(nil, path, c)
+	if err != nil && strings.Contains(err.Error(), "no such command") {
+		return false
+	}
+	if err != nil {
+		t.Fatalf("read %v: %v", path, err)
+	}
+	return true
 }
