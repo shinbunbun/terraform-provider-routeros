@@ -3,6 +3,11 @@
 ### Bug Fixes
 
 * **system_certificate:** Mark `key_file_content` as sensitive in the schema.
+* **system_certificate:** Fail the import when RouterOS reports decryption failures or a key without a certificate, imports no certificate, or leaves the certificate without its private key (for example a wrong `passphrase`). RouterOS reports these as successful calls, so the resource was created without its key.
+* **system_certificate:** Remove the temporary files created for `cert_file_content` and `key_file_content` when an import fails, and stop logging an error when RouterOS has already deleted them.
+* **system_certificate:** Record the certificate in state before importing the key, so a failed key import leaves a tainted resource instead of an untracked certificate.
+* **system_certificate:** Include the certificate name in import lookup errors.
+* **system_certificate:** Retry the import while a just-uploaded file is not yet selectable (`input does not match any value of file-name`, seen on RouterOS 7.16 over the API).
 
 ### Documentation
 
