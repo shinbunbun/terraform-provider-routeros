@@ -383,7 +383,7 @@ func ResourceSystemCertificate() *schema.Resource {
 	}
 
 	certImport := func(ctx context.Context, attrBlock any, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-		var certName string
+		certName := d.Get(KeyName).(string)
 
 		bl := attrBlock.(*schema.Set).List()[0].(map[string]interface{})
 		var resUrl = &URL{Path: resSchema[MetaResourcePath].Default.(string)}
@@ -411,12 +411,7 @@ func ResourceSystemCertificate() *schema.Resource {
 
 			bl["cert_file_name"] = name
 
-			defer func() {
-				diags = fileDelete(ctx, certFileId, m)
-				if diags != nil {
-					ColorizedMessage(ctx, ERROR, "Certificate file deletion error", map[string]interface{}{"diags": diags})
-				}
-			}()
+			defer fileDeleteIfExists(ctx, certFileId, m)
 		}
 
 		if data := bl["key_file_content"].(string); data != "" {
@@ -432,41 +427,40 @@ func ResourceSystemCertificate() *schema.Resource {
 
 			bl["key_file_name"] = name
 
-			// File is deleted by the MT after import.
-			// https://github.com/terraform-routeros/terraform-provider-routeros/issues/660
-			_, diags := fileCreate(ctx, name, data, m)
+			keyFileId, diags := fileCreate(ctx, name, data, m)
 			if diags != nil {
 				return diags
 			}
 
 			ColorizedDebug(ctx, fmt.Sprintf("The private key has been placed on file '%v'", name))
+
+			defer fileDeleteIfExists(ctx, keyFileId, m)
 		}
 
-		params := MikrotikItem{KeyName: d.Get(KeyName).(string), "file-name": bl["cert_file_name"].(string)}
-		if passwd, ok := bl["passphrase"]; ok {
-			params["passphrase"] = passwd.(string)
-		}
-
-		// Import certificate
-		err := m.(Client).SendRequest(crudImport, resUrl, params, nil)
-		if err != nil {
-			return diag.FromErr(err)
-		}
-
-		if keyFile, ok := bl["key_file_name"]; ok && keyFile.(string) != "" {
-			params = MikrotikItem{KeyName: d.Get(KeyName).(string), "file-name": keyFile.(string)}
+		importFile := func(fileName, counter string) diag.Diagnostics {
+			params := MikrotikItem{KeyName: certName, "file-name": fileName}
 			if passwd, ok := bl["passphrase"]; ok {
 				params["passphrase"] = passwd.(string)
 			}
 
-			// Import key
-			err := m.(Client).SendRequest(crudImport, resUrl, params, nil)
-			if err != nil {
+			var res []MikrotikItem
+			if err := m.(Client).SendRequest(crudImport, resUrl, params, &res); err != nil {
 				return diag.FromErr(err)
 			}
+
+			// RouterOS reports a failed import (bad PEM, wrong passphrase) as a successful call with zero counters.
+			if len(res) == 1 && res[0][counter] == "0" {
+				return diag.Errorf("nothing was imported from file %q: %v=0, decryption-failures=%v",
+					fileName, counter, res[0]["decryption-failures"])
+			}
+			return nil
 		}
 
-		res, err := ReadItemsFiltered([]string{"name=" + d.Get(KeyName).(string)},
+		if diags := importFile(bl["cert_file_name"].(string), "certificates-imported"); diags.HasError() {
+			return diags
+		}
+
+		res, err := ReadItemsFiltered([]string{"name=" + certName},
 			resSchema[MetaResourcePath].Default.(string), m.(Client))
 		if err != nil {
 			return diag.FromErr(err)
@@ -483,6 +477,12 @@ func ResourceSystemCertificate() *schema.Resource {
 			d.SetId(retId)
 		default:
 			return diag.Errorf("more than one resource found: name=%v", certName)
+		}
+
+		if keyFile, ok := bl["key_file_name"]; ok && keyFile.(string) != "" {
+			if diags := importFile(keyFile.(string), "private-keys-imported"); diags.HasError() {
+				return diags
+			}
 		}
 
 		return ResourceRead(ctx, resSchema, d, m)

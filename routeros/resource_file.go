@@ -148,3 +148,13 @@ func fileDelete(ctx context.Context, id string, m interface{}) diag.Diagnostics 
 	}
 	return nil
 }
+
+func fileDeleteIfExists(ctx context.Context, id string, m interface{}) {
+	res, err := ReadItems(&ItemId{Id, id}, "/file", m.(Client))
+	if err == nil && len(*res) == 0 {
+		return
+	}
+	if diags := fileDelete(ctx, id, m); diags != nil {
+		ColorizedMessage(ctx, ERROR, "Temporary file deletion error", map[string]interface{}{"diags": diags})
+	}
+}
