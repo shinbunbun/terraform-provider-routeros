@@ -70,7 +70,7 @@ mv main ~/.terraform.d/plugins/terraform.local/local/routeros/1.0.0/$(uname -s |
 required_providers {
   routeros = {
     source  = "shinbunbun/routeros"
-    version = "~> 2.1"
+    version = "~> 2.2"
   }
 }
 ```
